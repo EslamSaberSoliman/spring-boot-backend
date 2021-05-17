@@ -3,7 +3,7 @@ pipeline {
     
     environment {
          maventool= 'TEST'                                   // Add the maven tool that used by jenkins
-         giturl = 'https://github.com/EslamSaberSoliman/spring-boot-backend.git''   // Add the code repo here
+         giturl = 'https://github.com/EslamSaberSoliman/spring-boot-backend.git'   // Add the code repo here
          imagename = "eslamzaineldeen/react-spring-backend"      // Add the name of the image in the dockerhub repo
          imagenamebranch=""
          branch = "${env.BRANCH_NAME}"            // set the branch from git repo
