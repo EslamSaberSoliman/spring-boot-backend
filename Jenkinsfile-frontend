@@ -5,18 +5,19 @@ pipeline {
          maventool= 'TEST'                                   // Add the maven tool that used by jenkins
          giturl = 'https://github.com/EslamSaberSoliman/spring-boot-backend.git'   // Add the code repo here
          imagename = "eslamzaineldeen/react-spring-backend"      // Add the name of the image in the dockerhub repo
-         imagenamebranch=""                               // Def imagenamebranch Please don't set
+         imagenamebranch=""                                      // Def imagenamebranch Please don't set 
          branch = "${env.BRANCH_NAME}"            // set the branch from git repo
          registryCredential = 'eslam_docker_hub'          // docker hub credential in jenkins manage credential
          kubernetesCredential = "kubernetes_cluster"      // kubernetes credential in jenkins manage credential
-         dockerImage = ''                                 // Def dockerImage Please don't set
+         dockerImage = ''                                 // Def dockerImage  Please don't set
          gitCredential = 'infra-github'                   // git credential in jenkins manage credential
          deploymentfile="app.yml"                         // app deployment file of master branch
          deploymentfeaturefile="app-feature.yml"          // app deployment file of other branches
-         appname='react-springboot-backend'                       // appname that you want
-         namespace= 'deploy-backend'                         // namespace that you want
-         servicename = 'react-springboot-backend'                 // servicename that you want
-         servicetype = 'ClusterIP'                        // servicetype
+         appname='react-springboot-frontend'                       // appname that you want
+         namespace= 'deploy-backend'                      // namespace of backend should match that name in jenkins-backend
+         servicename = 'react-springboot-frontend'          // servicename that you want
+         servicenamebackend = 'react-springboot-backend'  // servicename of backend should match that name in jenkins-backend
+         servicetype = 'NodePort'                        // servicetype
          
         }
         
@@ -53,7 +54,8 @@ pipeline {
          when { not { branch 'master'}}
             steps{
                script {
-                  sh "cp Dockerfile-backend Dockerfile"
+                  sh "cp Dockerfile-frontend Dockerfile"
+                  sh "sed s"/backendpoint/$servicenamebackend/g" nginx-temp.conf > nginx.conf"
                   dockerImage = docker.build imagename + "_${branch}"
 
                 }
@@ -67,7 +69,8 @@ pipeline {
          }
             steps{
                script {
-                         sh "cp Dockerfile-backend Dockerfile"
+                         sh "cp Dockerfile-frontend Dockerfile"
+                         sh "sed s"/backendpoint/$servicenamebackend/g" nginx-temp.conf > nginx.conf"
                          dockerImage = docker.build imagename
 
                 }
